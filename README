@@ -1,7 +1,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~
 What is new in my version?
 ~~~~~~~~~~~~~~~~~~~~~~~~
-- Added support for more file formats, eg. srt
+- Added support for more file formats: idx, iso
 - A movie will use the folder name if no imdb hit on filename (Not possible to config atm)
 
 
