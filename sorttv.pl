@@ -80,7 +80,7 @@ my @imageext = ("jpg", "jpeg", "tbn");
 my (@whitelist, @blacklist, @deletelist, @sizerange, @filestosort, @nonmediaext);
 my (%showrenames, %showtvdbids);
 my $REDO_FILE = my $checkforupdates = my $moveseasons = my $windowsnames = my $tvdbrename = my $lookupseasonep = my $extractrar = my $useseasondirs = my $displaylicense = my $useextensions = "TRUE";
-my $usedots = my $rename = my $seasondoubledigit = my $removesymlinks = my $needshowexist = my $flattennonepisodefiles = my $tvdbrequired = my $sort_movie_dir = "FALSE";
+my $usedots = my $rename = my $seasondoubledigit = my $removesymlinks = my $needshowexist = my $flattennonepisodefiles = my $tvdbrequired = my $sort_movie_dir = my $use_movie_folder_name = "FALSE";
 my $dryrun = "";
 my $seasontitle = "Season ";
 my $sortby = "MOVE";
@@ -261,6 +261,7 @@ my @optionlist = (
 	"music-extension|me=s" => \@musicext,
 	"non-media-extension|nm=s" => \@nonmediaext,
 	"dir-permissions|dp=s" => \$dir_perms,
+        "movie-use-folder-name=s" => \$use_movie_folder_name,
 	"h|help|?" => \$help, man => \$man
 );
 
@@ -532,7 +533,8 @@ sub is_movie {
 				return 1;
 			}
                         # try folder name instead, lots of unpacked files have realy bad names
-                        else {
+                        elsif($use_movie_folder_name eq "TRUE") {
+                            out("verbose", "INFO: Using movie folder name to search tmdb\n");
                             $filename = basename(dirname($file));
                             if($filename =~ /(.*?)\s*-?\.?\s*\(?\[?((?:20|19)\d{2})\)?\]?(?:BDRip|\[Eng]|DVDRip|DVD|Bluray|XVID|DIVX|720|1080|HQ|x264|R5|RERip)*.*?/i
                                || $filename =~ /(.*?)\.?(?:[[\]{}()]|\[Eng]|BDRip|DVDRip|DVD|Bluray|XVID|DIVX|720|1080|HQ|x264|R5|RERip)+.*?()/i
@@ -865,6 +867,10 @@ OPTIONS:
 
 --use-dots-instead-of-spaces=[TRUE|FALSE]
 	Renames episodes to replace spaces with dots
+	If not specified, FALSE
+
+--movie-use-folder-name=[TRUE|FALSE]
+        Use folder name to search tmdb if no hit with file name.
 	If not specified, FALSE
 
 --season-title=string
@@ -2011,7 +2017,7 @@ sub match_and_sort_movie {
 	}
 	my $total_pages = $parsed_json_result->{total_pages};
 	my $total_results = $parsed_json_result->{total_results};
-	unless($total_results > 0) {
+	unless(defined $total_results && $total_results > 0) {
 		out("verbose",  "INFO: No movies matching $title found\n");
 		return "FALSE";
 	}
