@@ -535,17 +535,17 @@ sub is_movie {
                         # try folder name instead, lots of unpacked files have realy bad names
                         elsif($use_movie_folder_name eq "TRUE") {
                             out("verbose", "INFO: Using movie folder name to search tmdb\n");
+                            if(dirname($file) . "/" eq $sortdir){
+                                out("verbose", "INFO: Movie folder is same as root folder, will not be used for tmdb search\n");
+                                return 0;
+                            }
                             $filename = basename(dirname($file));
                             if($filename =~ /(.*?)\s*-?\.?\s*\(?\[?((?:20|19)\d{2})\)?\]?(?:BDRip|\[Eng]|DVDRip|DVD|Bluray|XVID|DIVX|720|1080|HQ|x264|R5|RERip)*.*?/i
                                || $filename =~ /(.*?)\.?(?:[[\]{}()]|\[Eng]|BDRip|DVDRip|DVD|Bluray|XVID|DIVX|720|1080|HQ|x264|R5|RERip)+.*?()/i
-                               || $filename =~ /(.*?)()/i) {
+                               || $filename =~ /(.*)()/i) {
                                 my $title = $1;
                                 my $year = $2;
                                 $title =~ s/(?:\[Eng]|BDRip|DVDRip|DVD|Bluray|XVID|DIVX|720|1080|HQ|x264|R5|RERip|[[\]{}()])//ig;
-                                #If this is the folder name don't look for it
-                                if($title eq "film_"){
-                                    return 0;
-                                }
                                 #at this point if it is not a known movie it is an "other"
                                 if(match_and_sort_movie($title, $year, $ext, $file) eq "TRUE") {
                                     return 1;
