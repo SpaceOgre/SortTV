@@ -535,11 +535,17 @@ sub is_movie {
                         # try folder name instead, lots of unpacked files have realy bad names
                         elsif($use_movie_folder_name eq "TRUE") {
                             out("verbose", "INFO: Using movie folder name to search tmdb\n");
-                            if(dirname($file) . "/" eq $sortdir){
+                            my $tempPath = dirname($file);
+                            $filename = basename($tempPath);
+                            while($filename =~ /.*? \(extracted by SortTV\)/i){
+                                $tempPath = dirname($tempPath);
+                                $filename = basename($tempPath);
+                            }
+                            if($tempPath . "/" eq $sortdir){
                                 out("verbose", "INFO: Movie folder is same as root folder, will not be used for tmdb search\n");
                                 return 0;
                             }
-                            $filename = basename(dirname($file));
+                            #$filename = basename(dirname($file));
                             if($filename =~ /(.*?)\s*-?\.?\s*\(?\[?((?:20|19)\d{2})\)?\]?(?:BDRip|\[Eng]|DVDRip|DVD|Bluray|XVID|DIVX|720|1080|HQ|x264|R5|RERip)*.*?/i
                                || $filename =~ /(.*?)\.?(?:[[\]{}()]|\[Eng]|BDRip|DVDRip|DVD|Bluray|XVID|DIVX|720|1080|HQ|x264|R5|RERip)+.*?()/i
                                || $filename =~ /(.*)()/i) {
@@ -1341,14 +1347,11 @@ sub extract_archives {
 	my $over = "";
 	my @errors = (-1, 32512, 256, 768); # 768: CRC error
 	foreach my $arfile (bsd_glob($escapedsortd.'*.{rar,zip,7z,gz,bz2}')) {
-                my $flagfile = $sortd . filename($arfile) . " (extracted by SortTV)";
-		my $dest = $sortd;#filename($sortd) . "/" . $arfile . " (extracted by SortTV)";
-		if(-e $flagfile) {
-			out("std", "SKIP: already extracted: $arfile\n");
+		my $dest = $filename($sortd) . "/" . $arfile . " (extracted by SortTV)";
+		if(-e $dest) {
+			out("std", "SKIP: already extracted: $dest\n");
 			next;
 		}
-                open FILE, '>'.$flagfile;
-                close FILE;
 		if(bsd_glob($escapedsortd.filename_without_ext($arfile).'*.{part}*')) {
 			out("std", "SKIP: parts are still downloading: $arfile\n");
 			next;
@@ -1358,10 +1361,10 @@ sub extract_archives {
 			next;
 		}
 
-		# unless (mkdir($dest)) {
-		# 	out("warn", "WARN: could not create directory: $dest ($!), extracting to $sortd\n");
-		# 	$dest = $sortd;
-		# }
+		unless (mkdir($dest)) {
+			out("warn", "WARN: could not create directory: $dest ($!), extracting to $sortd\n");
+			$dest = $sortd;
+		}
 		if($arfile =~ /.*\.rar$/) {
 			if($ifexists eq "OVERWRITE") {
 				$over = "+";
