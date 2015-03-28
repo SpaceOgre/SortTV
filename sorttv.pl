@@ -1347,7 +1347,7 @@ sub extract_archives {
 	my $over = "";
 	my @errors = (-1, 32512, 256, 768); # 768: CRC error
 	foreach my $arfile (bsd_glob($escapedsortd.'*.{rar,zip,7z,gz,bz2}')) {
-		my $dest = $filename($sortd) . "/" . $arfile . " (extracted by SortTV)";
+		my $dest = filename($sortd) . "/" . $arfile . " (extracted by SortTV)";
 		if(-e $dest) {
 			out("std", "SKIP: already extracted: $dest\n");
 			next;
