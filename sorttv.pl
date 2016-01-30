@@ -1237,7 +1237,7 @@ sub glob2pat {
 sub matches_type {
 	my ($file, @extensions) = @_;
 	foreach my $ext (@extensions) {
-		if($file =~ /.*\Q$ext\E$/) {
+		if($file =~ /.*\Q$ext\E$/i) {
 			return 1;
 		}
 	}
@@ -1247,7 +1247,7 @@ sub matches_type {
 sub is_other {
 	my ($file) = @_;
 	foreach my $ext (@nonmediaext) {
-		if($file =~ /.*\Q$ext\E$/) {
+		if($file =~ /.*\Q$ext\E$/i) {
 			return 1;
 		}
 	}
