@@ -532,7 +532,7 @@ sub is_movie {
 			if(match_and_sort_movie($title, $year, $ext, $file) eq "TRUE") {
 				return 1;
 			}
-                        # try folder name instead, lots of unpacked files have realy bad names
+                        # try folder name instead, lots of unpacked files have really bad names
                         elsif($use_movie_folder_name eq "TRUE") {
                             out("verbose", "INFO: Using movie folder name to search tmdb\n");
                             my $tempPath = dirname($file);
