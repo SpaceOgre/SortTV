@@ -1414,6 +1414,12 @@ sub extract_archives {
 				out("std", "WARN: the 7zip program could not be found (or an error occurred), not decompressing $arfile\n");
 			}
 		}
+
+		# Setting modified time for unpacked files to now.
+		# It is nice when using subliminal for subtitles so the --age flag can be used.
+		foreach my $fileName (bsd_glob($dest . '/*')) {
+			utime time, time, "$fileName";
+		}
 	}
 }
 
