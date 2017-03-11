@@ -582,7 +582,7 @@ sub is_tv_episode {
 		|| $dirsandfile =~ /(.*?)(?:\.|\s|\/|\\|-|\1)*(?:Season|Series|\Q$seasontitle\E)\D?0*(\d+)(?:\.|\s|\/|\\|-|\1)+\d??(?:[ .-]*Episode[ .-]*)?0*(\d{1,2}).*/i
 		#  not a date, but is 1x1 or 1-1
 		|| ($filename !~ /(\d{4}[-.]\d{1,2}[-.]\d{1,2})/ && $filename =~ /(.*)(?:\.|\s|-|_)+\[?0*(\d{1,3})\s*[xX-]\s*0*(\d+).*/)
-		|| $filename =~ /(.*)(?:\.|\s|-|_)+0*(\d)(\d{2})(?:\.|\s).*/
+		|| $filename =~ /(.*)(?:\.|\s|-|_)+(?:(?!19\d{2}|20\d{2})0*(\d{1,2})(\d{2}))(?:\.|\s).*/
 		|| ($matchtype eq "LIBERAL" && filename($file) =~ /(.*)(?:\.|\s|-|_)0*(\d+)\D*0*(\d+).*/)) {
 			$pureshowname = $1;
 			$pureshowname = fixpurename($pureshowname);
